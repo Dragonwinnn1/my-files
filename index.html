@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>WA Blast Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="toastContainer" class="toast-container"></div>
+  
+  <div id="loginPage">
+    <div class="login-box">
+      <h2>🔐 Login</h2>
+      <input type="text" id="username" placeholder="Username">
+      <input type="password" id="password" placeholder="Password">
+      <button onclick="doLogin()">Login</button>
+      <div id="loginMsg" class="msg"></div>
+    </div>
+  </div>
+
+  <div id="dashboardPage" class="hidden">
+    <aside class="sidebar" id="sidebarMenu">
+      <div class="brand">🚀 WA Dashboard</div>
+      <p class="user-info">
+        👤 <span id="welcomeUser"></span><br>
+        Role: <span id="welcomeRole"></span>
+      </p>
+      <nav>
+        <button class="active" data-page="dashboard" onclick="switchPage(this)">Dashboard</button>
+        <button data-page="send" onclick="switchPage(this)">Send Blast</button>
+        <button data-page="report" onclick="switchPage(this)">Report</button>
+        <button id="btnSetting" class="hidden" data-page="setting" onclick="switchPage(this)">User Setting</button>
+      </nav>
+      <button onclick="logout()" class="logout-btn">Logout</button>
+    </aside>
+
+    <main class="content">
+      <button class="hamburger" onclick="toggleSidebar()">☰ Menu</button> 
+      
+      <div id="page_dashboard" class="page-content"></div>
+      
+      <div id="page_send" class="page-content hidden"></div>
+      
+      <div id="page_report" class="page-content hidden"></div>
+      <div id="page_setting" class="page-content hidden"></div>
+
+      <footer>
+        © 2025 | Powered by PratamaGroup.co.id
+      </footer>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
