@@ -472,7 +472,7 @@ function prevPage() {
 }
 
 
-// Fungsi sendWA (TIDAK BERUBAH)
+// FUNGSI sendWA YANG DIREVISI FINAL UNTUK MENGATASI CHAT BARU KOSONG
 function sendWA(wa, nama, deposit, usernameFromSheet) { 
   if (!wa) {
     alert("Nomor tujuan kosong!");
@@ -482,22 +482,43 @@ function sendWA(wa, nama, deposit, usernameFromSheet) {
   if (cleanWa.startsWith('+')) cleanWa = cleanWa.slice(1);
 
   const sel = document.getElementById("templateSelect");
+  // Pastikan Anda memilih template yang benar
   const tmpl = sel && sel.value ? sel.value : "Halo {NAMAMEMBER}";
   
-  const pesan = tmpl.replace(/{NAMAMEMBER}/g, nama||"")
+  let pesan = tmpl.replace(/{NAMAMEMBER}/g, nama||"")
     .replace(/{USERNAME}/g, usernameFromSheet || "") 
     .replace(/{NO_WA}/g, cleanWa)
     .replace(/{DEPOSIT}/g, deposit||"")
     .replace(/{SHEET_USERNAME}/g, currentUser||""); 
+    
+  // *** PENTING: Ganti {LINEBREAK} menjadi %0A (URL encoded newline) ***
+  pesan = pesan.replace(/{LINEBREAK}/g, '%0A');
+
+  // === DEBUGGING: Tampilkan pesan di konsol ===
+  console.log(`[WA DEBUG] Mencoba mengirim ke ${cleanWa}. Pesan:`, pesan); 
+  // ===========================================
+
+  if (!pesan.trim()) {
+      console.error("[WA ERROR] Pesan yang dihasilkan kosong.");
+      alert("Template atau data isian kosong. Pesan tidak terkirim.");
+      return;
+  }
 
   try {
-    // HANYA MENGGUNAKAN WHATSAPP://SEND (TANPA FALLBACK wa.me)
-    window.location.href = `whatsapp://send?phone=${cleanWa}&text=${encodeURIComponent(pesan)}`;
+    // KEMBALI KE PROTOKOL HTTPS (wa.me) yang lebih stabil di PC
+    const url = `https://wa.me/${cleanWa}?text=${encodeURIComponent(pesan)}`;
+    
+    // Gunakan window.open untuk membuka di tab baru, lebih baik untuk blast
+    const newWindow = window.open(url, '_blank'); 
+    
+    // Coba fokuskan window baru, membantu agar browser memprioritaskan tab ini
+    if (newWindow) newWindow.focus(); 
+    
   } catch (e) {
-    console.error("whatsapp://send failed. Fallback to wa.me is disabled as per user request.");
+    console.error("Error opening WhatsApp link:", e);
   }
   
-  // Mark Sent hanya dijalankan setelah jeda (simulasi pengiriman berhasil)
+  // Mark Sent tetap dijalankan setelah jeda (simulasi pengiriman berhasil)
   setTimeout(() => {
     markSent(cleanWa, tmpl, deposit); 
   }, 1000); 
@@ -724,7 +745,7 @@ async function loadTemplates() {
   }
 }
 async function addTemplate(){
-  const text=prompt("Masukkan template baru:");
+  const text=prompt("Masukkan template baru: Gunakan {LINEBREAK} untuk baris baru.");
   if(!text)return;
   try {
     await fetch(API_URL+`?action=addTemplate&username=${encodeURIComponent(currentUser)}&text=${encodeURIComponent(text)}`);
