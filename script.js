@@ -1,5 +1,5 @@
 // ================= CONFIG (TIDAK BERUBAH) =================
-const API_URL = "https://script.google.com/macros/s/AKfycbxso9KHdgArN9ns4qPkHmQwbjh6oxyNfQ3xzsvzT_bYFnux8Mb2-8oSqg82dJT_UJw/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbxhQtVRPcVhdD7i7QCMIleYwp3wqudygiDmed9Y7LPn-FOKv5SzuzTqXjYS8fFCkogv/exec";
 
 let currentUser = null;
 let currentRole = null;
@@ -873,6 +873,7 @@ function switchPage(btn){
 }
 function showLogin(){document.getElementById("loginPage").classList.remove("hidden");document.getElementById("dashboardPage").classList.add("hidden");stopDashboardPolling();}
 function showDashboard(){document.getElementById("loginPage").classList.add("hidden");document.getElementById("dashboardPage").classList.remove("hidden");if(currentRole==="superadmin"){document.getElementById("btnSetting").classList.remove("hidden");} startDashboardPolling();}
+
 
 
 
